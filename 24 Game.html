@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《星光彈奏家 Starry Keys Master》| 展覽官方網站 & 實機體驗</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        space: {
+                            900: '#0B0F19',
+                            800: '#111827',
+                            700: '#1F2937',
+                        },
+                        neon: {
+                            purple: '#A855F7',
+                            cyan: '#06B6D4',
+                            pink: '#EC4899',
+                            gold: '#F59E0B',
+                            blue: '#3B82F6'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            '0%': { opacity: '0.4', filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.4))' },
+                            '100%': { opacity: '0.9', filter: 'drop-shadow(0 0 25px rgba(6, 182, 212, 0.8))' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Glowing & Canvas Styles */
+        body {
+            background-color: #0B0F19;
+            color: #F3F4F6;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-nav {
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.6), 0 0 40px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Keyboard Key Styles */
+        .key-btn {
+            transition: all 0.08s ease;
+            user-select: none;
+        }
+        .key-btn.active {
+            transform: translateY(4px) scale(0.96);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        /* Starry Particle Canvas Overlay */
+        #bg-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-neon-purple selection:text-white relative">
+
+    <!-- Starry Night Ambient Background Canvas -->
+    <canvas id="bg-stars"></canvas>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed top-[40%] right-[-10%] w-[600px] h-[600px] bg-neon-cyan/15 rounded-full blur-[140px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] left-[20%] w-[500px] h-[500px] bg-neon-pink/15 rounded-full blur-[130px] pointer-events-none z-0"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-neon-purple to-neon-cyan p-[2px] shadow-lg shadow-neon-purple/30 group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-space-900 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-music text-neon-cyan group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-white via-slate-200 to-neon-cyan bg-clip-text text-transparent block">
+                        星光彈奏家
+                    </span>
+                    <span class="text-[10px] text-gray-400 font-mono tracking-widest block uppercase">Starry Keys Master</span>
+                </div>
+            </a>
+
+            <!-- Desktop Quick Links -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#game-sandbox" class="text-neon-cyan hover:text-white transition-colors flex items-center gap-1.5 font-bold">
+                    <i class="fa-solid fa-gamepad text-xs text-neon-cyan"></i> 實機體驗區
+                </a>
+                <a href="#story" class="text-gray-300 hover:text-neon-cyan transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-book-open text-xs text-neon-purple"></i> 專案故事
+                </a>
+                <a href="#features" class="text-gray-300 hover:text-neon-cyan transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-xs text-neon-cyan"></i> 核心特色
+                </a>
+                <a href="#judges" class="text-gray-300 hover:text-neon-cyan transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-users text-xs text-neon-gold"></i> 評審陣容
+                </a>
+                <a href="#timeline" class="text-gray-300 hover:text-neon-cyan transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-timeline text-xs text-neon-pink"></i> 研發歷程
+                </a>
+            </div>
+
+            <!-- Action Button -->
+            <div class="flex items-center gap-4">
+                <a href="#game-sandbox" class="relative group overflow-hidden rounded-full p-[1px] font-semibold text-sm">
+                    <span class="absolute inset-0 bg-gradient-to-r from-neon-cyan via-teal-300 to-neon-purple rounded-full animate-gradient-x"></span>
+                    <span class="relative px-5 py-2.5 rounded-full bg-space-900 flex items-center gap-2 group-hover:bg-opacity-80 transition-all text-white">
+                        <i class="fa-solid fa-play text-xs text-neon-cyan animate-pulse"></i>
+                        <span>直接開始玩</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="relative z-10 pt-20">
+
+        <!-- 1. Hero Section -->
+        <section class="min-h-[50vh] flex items-center justify-center px-4 relative py-10">
+            <div class="max-w-5xl mx-auto text-center space-y-6">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-xs sm:text-sm font-medium text-neon-cyan border border-neon-cyan/30 animate-float">
+                    <span class="flex h-2 w-2 rounded-full bg-neon-cyan animate-ping"></span>
+                    <span>2026 互動音樂展覽推薦作品 · 最新防刷分修正版</span>
+                </div>
+
+                <!-- Main Title -->
+                <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight leading-none">
+                    <span class="block text-white mb-2">流星交織的旋律</span>
+                    <span class="bg-gradient-to-r from-neon-cyan via-teal-200 to-neon-purple bg-clip-text text-transparent text-glow">
+                        《星光彈奏家 Starry Keys Master》
+                    </span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="max-w-2xl mx-auto text-gray-300 text-base sm:text-lg font-normal leading-relaxed">
+                    專為展覽場域打造的 30 秒快拍節奏遊戲。簡化為 4 鍵極致感官體驗，搭配純程式 Web Audio 音色合成與防亂按懲罰機制，立即開始彈奏！
+                </p>
+
+                <!-- Hero Action Buttons -->
+                <div class="flex items-center justify-center gap-4 pt-2">
+                    <a href="#game-sandbox" class="px-8 py-4 rounded-xl bg-gradient-to-r from-neon-cyan to-teal-400 text-space-900 font-extrabold text-lg shadow-lg shadow-neon-cyan/30 hover:scale-105 transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-gamepad text-xl"></i>
+                        <span>立刻開始遊戲 (D F J K)</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Embedded Playable Game Sandbox (MOVED TO TOP FOR EASY PLAY) -->
+        <section id="game-sandbox" class="py-6 px-4 max-w-5xl mx-auto scroll-mt-24">
+            <div class="text-center max-w-3xl mx-auto mb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neon-cyan/10 text-neon-cyan text-xs font-semibold mb-2 border border-neon-cyan/30">
+                    <span class="h-2 w-2 rounded-full bg-neon-cyan animate-ping"></span>
+                    <span>READY TO PLAY</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">實機試玩體驗區 (已修正防刷分)</h2>
+                <p class="text-gray-400 text-sm mt-2">按下下方按鈕或直接敲擊鍵盤 <kbd class="px-2 py-0.5 bg-space-800 border border-white/20 rounded text-neon-cyan">D</kbd> <kbd class="px-2 py-0.5 bg-space-800 border border-white/20 rounded text-neon-cyan">F</kbd> <kbd class="px-2 py-0.5 bg-space-800 border border-white/20 rounded text-neon-cyan">J</kbd> <kbd class="px-2 py-0.5 bg-space-800 border border-white/20 rounded text-neon-cyan">K</kbd>！注意：空按沒有音符的軌道會扣分與斷連擊喔！</p>
+            </div>
+
+            <!-- Game Sandbox Container -->
+            <div class="glass-card rounded-3xl p-4 sm:p-6 border border-neon-cyan/30 shadow-2xl relative overflow-hidden">
+
+                <!-- Control Toolbar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4">
+                    <!-- Song Selection Dropdown/Buttons -->
+                    <div class="flex items-center gap-2 bg-space-900 p-1.5 rounded-xl border border-white/10">
+                        <span class="text-xs text-gray-400 font-bold px-1"><i class="fa-solid fa-compact-disc text-neon-cyan animate-spin"></i> 2026 流行熱門曲庫：</span>
+                        <select id="select-song" onchange="changeSong(this.value)" class="bg-space-800 text-white text-xs font-bold rounded-lg px-2.5 py-1.5 border border-neon-cyan/40 outline-none cursor-pointer focus:border-neon-cyan">
+                            <option value="apt_pop">🔥 Rosé & Bruno Mars - APT. (Funk Pop)</option>
+                            <option value="espresso_pop">☕ Sabrina Carpenter - Espresso Style (Chic Disco Pop)</option>
+                            <option value="supernova_kpop">⚡ aespa - Supernova (Cyber K-Pop Dance)</option>
+                            <option value="mando_love">🌸 華語流行 – 告白與氣球 (甜美華語流行 R&B)</option>
+                            <option value="mando_night">🌌 華語流行 – 晴天與星空 (抒情搖滾 Pop Rock)</option>
+                            <option value="synth_anthem">✨ Taylor Swift - 2026 Pop Anthem (動感 Pop Anthem)</option>
+                        </select>
+                    </div>
+
+                    <!-- Difficulty Selection -->
+                    <div class="flex items-center gap-2 bg-space-900 p-1.5 rounded-xl border border-white/10">
+                        <button id="btn-diff-easy" onclick="setDifficulty('easy')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-neon-cyan text-space-900 shadow-md">
+                            輕鬆 🌸
+                        </button>
+                        <button id="btn-diff-hard" onclick="setDifficulty('hard')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">
+                            挑戰 ⚡
+                        </button>
+                    </div>
+
+                    <!-- Instrument Selection -->
+                    <div class="flex items-center gap-2 bg-space-900 p-1.5 rounded-xl border border-white/10">
+                        <button id="btn-inst-piano" onclick="setInstrument('piano')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-neon-cyan text-space-900 shadow-md">
+                            🎹 鋼琴 Piano
+                        </button>
+                        <button id="btn-inst-harp" onclick="setInstrument('harp')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">
+                            💫 豎琴 Harp
+                        </button>
+                    </div>
+
+                    <!-- Start / Reset Button -->
+                    <button id="btn-game-toggle" onclick="toggleGame()" class="px-6 py-2 rounded-xl bg-gradient-to-r from-neon-cyan via-teal-300 to-emerald-400 text-space-900 font-extrabold text-sm hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-neon-cyan/20">
+                        <i class="fa-solid fa-play" id="game-btn-icon"></i>
+                        <span id="game-btn-text">開始體驗 (Start)</span>
+                    </button>
+                </div>
+
+                <!-- Live Score Dashboard -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-4 text-center relative">
+                    <div class="bg-space-900/80 p-3 rounded-xl border border-white/5 relative overflow-hidden">
+                        <div class="text-[10px] text-gray-400 uppercase font-mono tracking-wider">倒數時間 TIME</div>
+                        <div class="text-xl sm:text-2xl font-black text-neon-gold font-mono" id="disp-timer">30.0s</div>
+                    </div>
+                    <div class="bg-space-900/80 p-3 rounded-xl border border-white/5 relative overflow-hidden">
+                        <div class="text-[10px] text-gray-400 uppercase font-mono tracking-wider">連擊 COMBO</div>
+                        <div class="text-xl sm:text-2xl font-black text-neon-cyan font-mono" id="disp-combo">0</div>
+                        <div id="fever-badge" class="hidden absolute top-1 right-2 text-[9px] font-extrabold text-neon-gold animate-bounce bg-neon-gold/20 px-1.5 py-0.5 rounded border border-neon-gold/40">FEVER 2X!</div>
+                    </div>
+                    <div class="bg-space-900/80 p-3 rounded-xl border border-white/5 relative overflow-hidden">
+                        <div class="text-[10px] text-gray-400 uppercase font-mono tracking-wider">得分 SCORE</div>
+                        <div class="text-xl sm:text-2xl font-black text-neon-purple font-mono" id="disp-score">00000</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Game Area -->
+                <div class="relative w-full h-[380px] sm:h-[420px] bg-space-900/90 rounded-2xl overflow-hidden border border-white/10 shadow-inner">
+                    <canvas id="game-canvas" class="w-full h-full block cursor-pointer"></canvas>
+
+                    <!-- Fever Screen Glow Border -->
+                    <div id="fever-overlay" class="pointer-events-none absolute inset-0 border-4 border-neon-cyan opacity-0 transition-opacity duration-300 rounded-2xl"></div>
+
+                    <!-- Overlay Start Banner -->
+                    <div id="game-overlay-start" class="absolute inset-0 bg-space-900/85 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20 transition-opacity">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-neon-cyan to-neon-purple p-[2px] mb-4 animate-bounce">
+                            <div class="w-full h-full bg-space-900 rounded-[14px] flex items-center justify-center text-neon-cyan text-2xl">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">準備好彈奏星芒了嗎？</h3>
+                        <p class="text-gray-300 text-xs sm:text-sm max-w-sm mb-6">
+                            按下 <kbd class="px-2 py-1 bg-space-800 rounded border border-white/20 text-neon-cyan">D</kbd> <kbd class="px-2 py-1 bg-space-800 rounded border border-white/20 text-neon-cyan">F</kbd> <kbd class="px-2 py-1 bg-space-800 rounded border border-white/20 text-neon-cyan">J</kbd> <kbd class="px-2 py-1 bg-space-800 rounded border border-white/20 text-neon-cyan">K</kbd> 開始！請注意：四鍵齊按會觸發懲罰扣分！
+                        </p>
+                        <button onclick="toggleGame()" class="px-8 py-3 rounded-xl bg-gradient-to-r from-neon-cyan to-teal-400 text-space-900 font-extrabold shadow-lg shadow-neon-cyan/40 hover:scale-105 transition-all">
+                            立即開始 30 秒遊戲
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Touch Pads / Mobile Buttons -->
+                <div class="grid grid-cols-4 gap-2 mt-4">
+                    <button id="touch-key-0" onmousedown="triggerKey(0)" ontouchstart="triggerKey(0); event.preventDefault();" class="key-btn h-14 rounded-xl bg-space-900 border border-neon-cyan/40 text-neon-cyan font-extrabold text-lg flex flex-col items-center justify-center active:bg-neon-cyan active:text-space-900">
+                        <span>D</span>
+                        <span class="text-[9px] font-normal opacity-70">軌道 1</span>
+                    </button>
+                    <button id="touch-key-1" onmousedown="triggerKey(1)" ontouchstart="triggerKey(1); event.preventDefault();" class="key-btn h-14 rounded-xl bg-space-900 border border-teal-300/40 text-teal-300 font-extrabold text-lg flex flex-col items-center justify-center active:bg-teal-300 active:text-space-900">
+                        <span>F</span>
+                        <span class="text-[9px] font-normal opacity-70">軌道 2</span>
+                    </button>
+                    <button id="touch-key-2" onmousedown="triggerKey(2)" ontouchstart="triggerKey(2); event.preventDefault();" class="key-btn h-14 rounded-xl bg-space-900 border border-neon-purple/40 text-neon-purple font-extrabold text-lg flex flex-col items-center justify-center active:bg-neon-purple active:text-white">
+                        <span>J</span>
+                        <span class="text-[9px] font-normal opacity-70">軌道 3</span>
+                    </button>
+                    <button id="touch-key-3" onmousedown="triggerKey(3)" ontouchstart="triggerKey(3); event.preventDefault();" class="key-btn h-14 rounded-xl bg-space-900 border border-neon-gold/40 text-neon-gold font-extrabold text-lg flex flex-col items-center justify-center active:bg-neon-gold active:text-space-900">
+                        <span>K</span>
+                        <span class="text-[9px] font-normal opacity-70">軌道 4</span>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. Project Story & Concept -->
+        <section id="story" class="py-16 px-4 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-sm font-bold text-neon-cyan uppercase tracking-widest mb-2">Project Story & Concept</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">專案故事與核心亮點</p>
+                <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                    專為展覽互動場域設計——透過「30 秒快節奏體驗」與「即時生成的多風格評審成績單」，讓每位參觀者都能感受音樂敲擊與視覺光影相結合的極致魅力。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-neon-cyan/50 transition-all hover:-translate-y-1 group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-cyan/10 border border-neon-cyan/30 flex items-center justify-center text-neon-cyan text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">4 鍵極致直覺操作</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        精簡為 D / F / J / K 四軌區域，同時完全適應電腦鍵盤與展場觸控螢幕，無痛上手。
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-neon-purple/50 transition-all hover:-translate-y-1 group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-purple/10 border border-neon-purple/30 flex items-center justify-center text-neon-purple text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-music"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Web Audio 即時聲學</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        內建「鋼琴 (Piano)」與「夢幻豎琴 (Harp)」純程式波形合成器，零延遲輸出清亮諧波。
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-neon-gold/50 transition-all hover:-translate-y-1 group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-gold/10 border border-neon-gold/30 flex items-center justify-center text-neon-gold text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-stopwatch"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">30 秒高密度體驗</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        黃金單局體驗時間，大幅提升展覽現場人潮輪替效率與現場互動熱度。
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-neon-pink/50 transition-all hover:-translate-y-1 group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-pink/10 border border-neon-pink/30 flex items-center justify-center text-neon-pink text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">智慧防刷分機制</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        精準打擊判定，空按無音符區域即刻判定 MISS 斷連擊並扣分，杜絕盲目全鍵狂按。
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-emerald-400/50 transition-all hover:-translate-y-1 group">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-400/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">輕鬆 / 挑戰 雙重速度</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        提供「輕鬆 🌸」悠閒連擊與「挑戰 ⚡」高速星芒兩種流速，滿足多樣化需求。
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="glass-card p-8 rounded-2xl hover:border-neon-blue/50 transition-all hover:-translate-y-1 group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-blue/10 border border-neon-blue/30 flex items-center justify-center text-neon-blue text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">多風格評審獨家講評</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        結算時由莫札特、艾倫、雷哥與貓貓導師提供個人化專屬成績評語與稱號。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Judge Character Showcase -->
+        <section id="judges" class="py-16 px-4 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-sm font-bold text-neon-gold uppercase tracking-widest mb-2">Judges Panel</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">星光大賽評審陣容</p>
+                <p class="text-gray-400 text-sm mt-3">遊玩結束後，四位評審將會為你的彈奏做出專業（與幽默）的總結評語</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Judge 1: Mozart -->
+                <div class="glass-card rounded-2xl p-6 border-neon-purple/20 hover:border-neon-purple transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-tr from-purple-900 to-indigo-600 flex items-center justify-center border-2 border-neon-purple text-3xl text-white shadow-lg shadow-neon-purple/30">
+                            🎼
+                        </div>
+                        <div class="text-center">
+                            <span class="px-2.5 py-1 rounded-full bg-neon-purple/20 text-neon-purple text-xs font-semibold">古典大師</span>
+                            <h3 class="text-xl font-bold text-white mt-2">莫札特</h3>
+                            <p class="text-xs text-gray-400 mt-1">講求樂章節奏與嚴謹結構</p>
+                        </div>
+                        <div class="mt-6 p-4 rounded-xl bg-space-900/80 border border-white/5 text-xs text-gray-300 italic leading-relaxed">
+                            「交響樂的精髓在於音符間的完美秩序，展現你的優雅吧！」
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-xs text-gray-400 flex justify-between items-center">
+                        <span>重視項目：</span>
+                        <span class="text-neon-purple font-semibold">Perfect 準確率</span>
+                    </div>
+                </div>
+
+                <!-- Judge 2: Pop Producer -->
+                <div class="glass-card rounded-2xl p-6 border-neon-cyan/20 hover:border-neon-cyan transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-tr from-cyan-900 to-blue-600 flex items-center justify-center border-2 border-neon-cyan text-3xl text-white shadow-lg shadow-neon-cyan/30">
+                            🎧
+                        </div>
+                        <div class="text-center">
+                            <span class="px-2.5 py-1 rounded-full bg-neon-cyan/20 text-neon-cyan text-xs font-semibold">流行製作人</span>
+                            <h3 class="text-xl font-bold text-white mt-2">艾倫 Alex</h3>
+                            <p class="text-xs text-gray-400 mt-1">追求律動感與聽眾共鳴</p>
+                        </div>
+                        <div class="mt-6 p-4 rounded-xl bg-space-900/80 border border-white/5 text-xs text-gray-300 italic leading-relaxed">
+                            「這節奏簡直可以直接發單曲！連擊 Combo 不要停！」
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-xs text-gray-400 flex justify-between items-center">
+                        <span>重視項目：</span>
+                        <span class="text-neon-cyan font-semibold">最高 Combo 數</span>
+                    </div>
+                </div>
+
+                <!-- Judge 3: Jazz Master -->
+                <div class="glass-card rounded-2xl p-6 border-neon-pink/20 hover:border-neon-pink transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-tr from-pink-900 to-red-600 flex items-center justify-center border-2 border-neon-pink text-3xl text-white shadow-lg shadow-neon-pink/30">
+                            🎷
+                        </div>
+                        <div class="text-center">
+                            <span class="px-2.5 py-1 rounded-full bg-neon-pink/20 text-neon-pink text-xs font-semibold">爵士大師</span>
+                            <h3 class="text-xl font-bold text-white mt-2">雷哥 Ray</h3>
+                            <p class="text-xs text-gray-400 mt-1">欣賞靈魂擺動與即興包容</p>
+                        </div>
+                        <div class="mt-6 p-4 rounded-xl bg-space-900/80 border border-white/5 text-xs text-gray-300 italic leading-relaxed">
+                            「即使偶爾 Missing 也是搖擺的靈魂，音樂最重要的是 Groove！」
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-xs text-gray-400 flex justify-between items-center">
+                        <span>重視項目：</span>
+                        <span class="text-neon-pink font-semibold">音樂流暢度</span>
+                    </div>
+                </div>
+
+                <!-- Judge 4: Cat Mentor Meow -->
+                <div class="glass-card rounded-2xl p-6 border-neon-gold/20 hover:border-neon-gold transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-tr from-amber-800 to-yellow-500 flex items-center justify-center border-2 border-neon-gold text-3xl text-white shadow-lg shadow-neon-gold/30">
+                            🐱
+                        </div>
+                        <div class="text-center">
+                            <span class="px-2.5 py-1 rounded-full bg-neon-gold/20 text-neon-gold text-xs font-semibold">貓貓導師</span>
+                            <h3 class="text-xl font-bold text-white mt-2">喵喵 Meow</h3>
+                            <p class="text-xs text-gray-400 mt-1">以罐罐與手速評定星等</p>
+                        </div>
+                        <div class="mt-6 p-4 rounded-xl bg-space-900/80 border border-white/5 text-xs text-gray-300 italic leading-relaxed">
+                            「喵～肉墊踩在鍵盤上的感覺真棒！給你好評拿罐罐來換！」
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-xs text-gray-400 flex justify-between items-center">
+                        <span>重視項目：</span>
+                        <span class="text-neon-gold font-semibold">可愛與總得分</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Development Journey / Timeline Section -->
+        <section id="timeline" class="py-16 px-4 max-w-5xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-sm font-bold text-neon-pink uppercase tracking-widest mb-2">Development Roadmap</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">研發歷程與版本疊代</p>
+            </div>
+
+            <div class="relative border-l-2 border-neon-purple/30 ml-4 sm:ml-32 space-y-12">
+                <!-- Phase 1 -->
+                <div class="relative pl-8 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-space-900 border-2 border-neon-cyan flex items-center justify-center text-xs text-neon-cyan font-bold shadow-lg shadow-neon-cyan/50 group-hover:scale-125 transition-transform">
+                        P1
+                    </div>
+                    <div class="hidden sm:block absolute -left-32 top-2 text-xs font-mono text-neon-cyan font-semibold w-24 text-right">
+                        階段一
+                    </div>
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl border-white/10 hover:border-neon-cyan/40 transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 rounded-md bg-neon-cyan/10 text-neon-cyan text-xs font-semibold">視覺與品牌確立</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">品牌定調 & 視覺確立</h3>
+                        <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                            正式命名作品為《星光彈奏家 Starry Keys Master》，訂定夜空深藍色調、流星軌道與光學粒子等專屬視覺風格。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative pl-8 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-space-900 border-2 border-neon-purple flex items-center justify-center text-xs text-neon-purple font-bold shadow-lg shadow-neon-purple/50 group-hover:scale-125 transition-transform">
+                        P2
+                    </div>
+                    <div class="hidden sm:block absolute -left-32 top-2 text-xs font-mono text-neon-purple font-semibold w-24 text-right">
+                        階段二
+                    </div>
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl border-white/10 hover:border-neon-purple/40 transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 rounded-md bg-neon-purple/10 text-neon-purple text-xs font-semibold">核心音效與人物</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Web Audio 雙音色與多評審系統</h3>
+                        <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                            實作鋼琴 (Piano) 與夢幻豎琴 (Harp) 純程式即時合成器，同時導入莫札特、流行製作人、爵士大師與貓貓導師喵喵四大性格評審角色。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative pl-8 group">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-space-900 border-2 border-neon-pink flex items-center justify-center text-xs text-neon-pink font-bold shadow-lg shadow-neon-pink/50 group-hover:scale-125 transition-transform">
+                        P3
+                    </div>
+                    <div class="hidden sm:block absolute -left-32 top-2 text-xs font-mono text-neon-pink font-semibold w-24 text-right">
+                        階段三
+                    </div>
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl border-white/10 hover:border-neon-pink/40 transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 rounded-md bg-neon-pink/10 text-neon-pink text-xs font-semibold">防刷分與優化</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">防刷分機制與體驗升級</h3>
+                        <p class="text-gray-300 text-sm mt-3 leading-relaxed">
+                            簡化為 4 鍵極致感官體驗，並導入精準空按懲罰與四鍵齊按限制，打造展覽場域最高密度的優質體驗。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Post-Game Judge Report Modal (結算成績單) -->
+    <div id="modal-report" class="fixed inset-0 z-50 bg-space-900/90 backdrop-blur-md flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-card max-w-2xl w-full rounded-3xl border border-white/20 p-6 sm:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="text-center space-y-2">
+                <span class="px-3 py-1 rounded-full bg-neon-purple/20 text-neon-purple text-xs font-semibold uppercase tracking-widest">Performance Report</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white">星空大賽評審成績單</h3>
+            </div>
+
+            <!-- Grade & Summary Card -->
+            <div class="my-6 p-6 rounded-2xl bg-gradient-to-r from-purple-900/40 via-space-900 to-indigo-900/40 border border-white/10 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-gray-400">演奏評級 Evaluation</div>
+                    <div class="text-5xl font-black bg-gradient-to-r from-neon-gold via-neon-pink to-neon-cyan bg-clip-text text-transparent font-mono" id="modal-rank">
+                        S Rank
+                    </div>
+                </div>
+                <div class="text-right space-y-1">
+                    <div class="text-xs text-gray-400">最終得分：<span class="text-white font-bold font-mono text-base" id="modal-score">12,450</span></div>
+                    <div class="text-xs text-gray-400">最高連擊：<span class="text-neon-cyan font-bold font-mono text-base" id="modal-combo">42 Combo</span></div>
+                    <div class="text-xs text-gray-400">Perfect 判定：<span class="text-emerald-400 font-bold font-mono text-base" id="modal-perfect">35</span></div>
+                </div>
+            </div>
+
+            <!-- Four Judges Comments -->
+            <div class="space-y-3 mb-6">
+                <!-- Mozart -->
+                <div class="p-3.5 rounded-xl bg-space-900/80 border border-neon-purple/30 flex items-start gap-3">
+                    <div class="text-2xl">🎼</div>
+                    <div>
+                        <div class="text-xs font-bold text-neon-purple">莫札特：</div>
+                        <div class="text-xs text-gray-200 mt-0.5" id="comment-mozart">「節奏十分流暢，音符間如繁星排列般精緻！」</div>
+                    </div>
+                </div>
+                <!-- Pop Producer -->
+                <div class="p-3.5 rounded-xl bg-space-900/80 border border-neon-cyan/30 flex items-start gap-3">
+                    <div class="text-2xl">🎧</div>
+                    <div>
+                        <div class="text-xs font-bold text-neon-cyan">流行製作人 艾倫：</div>
+                        <div class="text-xs text-gray-200 mt-0.5" id="comment-pop">「連擊停不下來！這段現場演出完全可以直接錄製單曲！」</div>
+                    </div>
+                </div>
+                <!-- Jazz Master -->
+                <div class="p-3.5 rounded-xl bg-space-900/80 border border-neon-pink/30 flex items-start gap-3">
+                    <div class="text-2xl">🎷</div>
+                    <div>
+                        <div class="text-xs font-bold text-neon-pink">爵士大師 雷哥：</div>
+                        <div class="text-xs text-gray-200 mt-0.5" id="comment-jazz">「搖擺的律動抓得很緊，現場氛圍被你炒熱了！」</div>
+                    </div>
+                </div>
+                <!-- Cat Mentor -->
+                <div class="p-3.5 rounded-xl bg-space-900/80 border border-neon-gold/30 flex items-start gap-3">
+                    <div class="text-2xl">🐱</div>
+                    <div>
+                        <div class="text-xs font-bold text-neon-gold">貓貓導師 喵喵：</div>
+                        <div class="text-xs text-gray-200 mt-0.5" id="comment-cat">「喵～手速好快！本貓給你最高五顆罐罐肯定！」</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-center gap-4">
+                <button onclick="closeReportModal(); toggleGame();" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-neon-cyan to-teal-400 text-space-900 font-bold hover:scale-105 transition-all shadow-lg shadow-neon-cyan/20">
+                    再試一次 🔄
+                </button>
+                <button onclick="closeReportModal()" class="px-6 py-2.5 rounded-xl bg-space-800 text-white border border-white/10 font-bold hover:bg-space-700 transition-all">
+                    關閉成績單 ✕
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        /* ==========================================================================
+           2. Pure Web Audio Synthesizer Engine (Interactive Pop Accompaniment & Melodic Scales)
+           ========================================================================== */
+        let audioCtx = null;
+        let currentInstrument = 'piano'; // 'piano' | 'harp'
+        let currentSong = 'apt_pop'; 
+        let bgAccompanimentTimer = null;
+        let beatStep = 0;
+        let visualizerData = new Array(16).fill(0); // Audio visualizer bars data
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Expanded 2026 Hit Songs List for Auto-Next/Non-Repeating Playlist
+        const songList = ['apt_pop', 'espresso_pop', 'supernova_kpop', 'mando_love', 'mando_night', 'synth_anthem'];
+
+        // 2026 Pop Hit Melodic Scales for D, F, J, K keys
+        const songScales = {
+            apt_pop: [293.66, 329.63, 392.00, 440.00],        // D4, E4, G4, A4 (Funk Pop)
+            espresso_pop: [329.63, 392.00, 440.00, 493.88],   // E4, G4, A4, B4 (Disco Funk)
+            supernova_kpop: [220.00, 261.63, 293.66, 349.23], // A3, C4, D4, F4 (Cyber K-Pop)
+            mando_love: [261.63, 293.66, 329.63, 392.00],     // C4, D4, E4, G4 (Mandopop R&B)
+            mando_night: [196.00, 220.00, 261.63, 293.66],    // G3, A3, C4, D4 (Mandopop Rock)
+            synth_anthem: [440.00, 493.88, 523.25, 659.25]    // A4, B4, C5, E5 (Pop Anthem)
+        };
+
+        // Chords & Harmonic Support trigger on note keypress for seamless dynamic harmony
+        const songChords = {
+            apt_pop: [
+                { bass: 146.83, chord: [293.66, 370.00, 440.00] },
+                { bass: 110.00, chord: [220.00, 277.18, 329.63] },
+                { bass: 123.47, chord: [246.94, 293.66, 370.00] },
+                { bass: 130.81, chord: [261.63, 329.63, 392.00] }
+            ],
+            espresso_pop: [
+                { bass: 164.81, chord: [329.63, 392.00, 493.88] },
+                { bass: 130.81, chord: [261.63, 329.63, 392.00] },
+                { bass: 146.83, chord: [293.66, 349.23, 440.00] },
+                { bass: 196.00, chord: [392.00, 493.88, 587.33] }
+            ],
+            supernova_kpop: [
+                { bass: 110.00, chord: [220.00, 261.63, 329.63] },
+                { bass: 139.69, chord: [279.38, 349.23, 415.30] },
+                { bass: 146.83, chord: [293.66, 349.23, 440.00] },
+                { bass: 164.81, chord: [329.63, 392.00, 493.88] }
+            ],
+            mando_love: [
+                { bass: 130.81, chord: [261.63, 329.63, 392.00] },
+                { bass: 110.00, chord: [220.00, 261.63, 329.63] },
+                { bass: 174.61, chord: [261.63, 349.23, 440.00] },
+                { bass: 196.00, chord: [293.66, 392.00, 493.88] }
+            ],
+            mando_night: [
+                { bass: 196.00, chord: [392.00, 493.88, 587.33] },
+                { bass: 164.81, chord: [329.63, 392.00, 493.88] },
+                { bass: 130.81, chord: [261.63, 329.63, 392.00] },
+                { bass: 146.83, chord: [293.66, 370.00, 440.00] }
+            ],
+            synth_anthem: [
+                { bass: 110.00, chord: [220.00, 261.63, 329.63] },
+                { bass: 174.61, chord: [261.63, 349.23, 440.00] },
+                { bass: 130.81, chord: [261.63, 329.63, 392.00] },
+                { bass: 196.00, chord: [293.66, 392.00, 493.88] }
+            ]
+        };
+
+        // Smooth Soft Background Groove (Low volume rhythm layer)
+        function playAccompanimentBeat() {
+            if (!isGaming || !audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            // Pulse audio visualizer bars
+            for (let i = 0; i < visualizerData.length; i++) {
+                visualizerData[i] = Math.max(visualizerData[i], Math.random() * 0.4 + 0.2);
+            }
+
+            // Soft Pop Kick (Gentle bottom beat)
+            if (beatStep % 4 === 0) {
+                const kickOsc = audioCtx.createOscillator();
+                const kickGain = audioCtx.createGain();
+                kickOsc.frequency.setValueAtTime(120, now);
+                kickOsc.frequency.exponentialRampToValueAtTime(32, now + 0.14);
+                kickGain.gain.setValueAtTime(0.25, now);
+                kickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                kickOsc.connect(kickGain);
+                kickGain.connect(audioCtx.destination);
+                kickOsc.start(now);
+                kickOsc.stop(now + 0.16);
+            }
+            beatStep++;
+        }
+
+        function startAccompaniment() {
+            stopAccompaniment();
+            beatStep = 0;
+            bgAccompanimentTimer = setInterval(playAccompanimentBeat, 260);
+        }
+
+        function stopAccompaniment() {
+            if (bgAccompanimentTimer) {
+                clearInterval(bgAccompanimentTimer);
+                bgAccompanimentTimer = null;
+            }
+        }
+
+        // Play Main Melody Note PLUS Harmonized Pop Chord layer synced directly to key presses
+        function playSynthesizedNote(laneIndex) {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            // Trigger Visualizer Burst
+            for (let i = laneIndex * 4; i < (laneIndex + 1) * 4; i++) {
+                if (visualizerData[i] !== undefined) visualizerData[i] = 1.0;
+            }
+
+            const scale = songScales[currentSong] || songScales.apt_pop;
+            const freq = scale[laneIndex] || 293.66;
+            const now = audioCtx.currentTime;
+
+            // 1. Interactive Harmonized Bass/Chord Backing matching the note pressed!
+            const chords = songChords[currentSong] || songChords.apt_pop;
+            const chordObj = chords[laneIndex % chords.length];
+
+            const bassOsc = audioCtx.createOscillator();
+            const bassGain = audioCtx.createGain();
+            bassOsc.type = 'sine';
+            bassOsc.frequency.setValueAtTime(chordObj.bass, now);
+            bassGain.gain.setValueAtTime(0.12, now);
+            bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            bassOsc.connect(bassGain);
+            bassGain.connect(audioCtx.destination);
+            bassOsc.start(now);
+            bassOsc.stop(now + 0.38);
+
+            // 2. Main Lead Pop Synthesizer
+            if (currentInstrument === 'piano') {
+                const osc = audioCtx.createOscillator();
+                const subOsc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc.type = 'sawtooth';
+                subOsc.type = 'triangle';
+
+                osc.frequency.setValueAtTime(freq, now);
+                subOsc.frequency.setValueAtTime(freq * 1.5, now); // Perfect Fifth Harmony
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(2800, now);
+                filter.frequency.exponentialRampToValueAtTime(600, now + 0.35);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.42, now + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+                osc.connect(filter);
+                subOsc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                subOsc.start(now);
+                osc.stop(now + 0.48);
+                subOsc.stop(now + 0.48);
+
+            } else if (currentInstrument === 'harp') {
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc1.type = 'triangle';
+                osc2.type = 'sine';
+
+                osc1.frequency.setValueAtTime(freq, now);
+                osc2.frequency.setValueAtTime(freq * 2.0, now);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.35, now + 0.005);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + 0.65);
+                osc2.stop(now + 0.65);
+            }
+        }
+
+        function setInstrument(inst) {
+            currentInstrument = inst;
+            const btnPiano = document.getElementById('btn-inst-piano');
+            const btnHarp = document.getElementById('btn-inst-harp');
+            if (inst === 'piano') {
+                btnPiano.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-neon-cyan text-space-900 shadow-md";
+                btnHarp.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white";
+            } else {
+                btnHarp.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-neon-cyan text-space-900 shadow-md";
+                btnPiano.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white";
+            }
+        }
+
+        function changeSong(songKey) {
+            currentSong = songKey;
+            document.getElementById('select-song').value = songKey;
+            if (isGaming) {
+                startGame();
+            }
+        }
+
+        // Pick a non-repeating song for the next play
+        function pickNextNonRepeatingSong() {
+            const currentIndex = songList.indexOf(currentSong);
+            const nextIndex = (currentIndex + 1) % songList.length;
+            changeSong(songList[nextIndex]);
+        }
+
+        /* ==========================================================================
+           3. Rhythm Game Loop & Anti-Spam Logic
+           ========================================================================== */
+        let gameCanvas = document.getElementById('game-canvas');
+        let ctx = gameCanvas ? gameCanvas.getContext('2d') : null;
+
+        let isGaming = false;
+        let gameDifficulty = 'easy'; // 'easy' | 'hard'
+        let gameTimer = 30.0;
+        let gameInterval = null;
+        let animFrameId = null; // Track requestAnimationFrame ID to ensure clean exit
+        let score = 0;
+        let combo = 0;
+        let maxCombo = 0;
+        let countPerfect = 0;
+        let countGreat = 0;
+        let countMiss = 0;
+
+        let notes = [];
+        let particles = [];
+        let floatTexts = [];
+        let shockwaves = [];
+        let lastSpawnTime = 0;
+        let lanePressState = [false, false, false, false];
+
+        // Track last press time per lane to enforce Anti-Spam (Cooldown)
+        let lastLanePressTime = [0, 0, 0, 0];
+
+        function resizeCanvas() {
+            if (!gameCanvas) return;
+            const rect = gameCanvas.parentElement.getBoundingClientRect();
+            gameCanvas.width = rect.width;
+            gameCanvas.height = rect.height;
+        }
+
+        function setDifficulty(diff) {
+            gameDifficulty = diff;
+            const btnEasy = document.getElementById('btn-diff-easy');
+            const btnHard = document.getElementById('btn-diff-hard');
+            if (diff === 'easy') {
+                btnEasy.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-neon-cyan text-space-900 shadow-md";
+                btnHard.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white";
+            } else {
+                btnHard.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-neon-cyan text-space-900 shadow-md";
+                btnEasy.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white";
+            }
+        }
+
+        function toggleGame() {
+            if (isGaming) {
+                stopGame();
+            } else {
+                startGame();
+            }
+        }
+
+        function startGame() {
+            initAudioContext();
+            stopGame(); // Clean up any active timers/loops before fresh start
+
+            isGaming = true;
+            score = 0;
+            combo = 0;
+            maxCombo = 0;
+            countPerfect = 0;
+            countGreat = 0;
+            countMiss = 0;
+            notes = [];
+            particles = [];
+            floatTexts = [];
+            shockwaves = [];
+            gameTimer = 30.0;
+
+            resizeCanvas();
+            updateDashboard();
+
+            document.getElementById('game-overlay-start').classList.add('hidden');
+            document.getElementById('game-btn-icon').className = "fa-solid fa-rotate-right";
+            document.getElementById('game-btn-text').textContent = "重新開始 (Reset)";
+
+            startAccompaniment();
+
+            gameInterval = setInterval(() => {
+                gameTimer -= 0.1;
+                if (gameTimer <= 0) {
+                    gameTimer = 0;
+                    document.getElementById('disp-timer').textContent = '0.0s';
+                    stopGame();
+                    showReportModal();
+                    pickNextNonRepeatingSong();
+                    return;
+                }
+                document.getElementById('disp-timer').textContent = gameTimer.toFixed(1) + 's';
+            }, 100);
+
+            lastSpawnTime = performance.now();
+            animFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function stopGame() {
+            isGaming = false;
+            stopAccompaniment();
+
+            if (gameInterval) {
+                clearInterval(gameInterval);
+                gameInterval = null;
+            }
+            if (animFrameId) {
+                cancelAnimationFrame(animFrameId);
+                animFrameId = null;
+            }
+
+            document.getElementById('game-btn-icon').className = "fa-solid fa-play";
+            document.getElementById('game-btn-text').textContent = "開始體驗 (Start)";
+
+            // Reset FEVER UI
+            const feverBadge = document.getElementById('fever-badge');
+            const feverOverlay = document.getElementById('fever-overlay');
+            if (feverBadge) feverBadge.classList.add('hidden');
+            if (feverOverlay) feverOverlay.style.opacity = '0';
+        }
+
+        function updateDashboard() {
+            document.getElementById('disp-score').textContent = score.toString().padStart(5, '0');
+            document.getElementById('disp-combo').textContent = combo;
+        }
+
+        function spawnNotes(timestamp) {
+            const spawnInterval = gameDifficulty === 'easy' ? 450 : 280;
+            const speed = gameDifficulty === 'easy' ? 5 : 7.5;
+
+            if (timestamp - lastSpawnTime > spawnInterval) {
+                lastSpawnTime = timestamp;
+                const lane = Math.floor(Math.random() * 4);
+                notes.push({
+                    lane: lane,
+                    y: -20,
+                    speed: speed,
+                    hit: false
+                });
+            }
+        }
+
+        function gameLoop(timestamp) {
+            if (!gameCanvas || !ctx) return;
+            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            const w = gameCanvas.width;
+            const h = gameCanvas.height;
+            const laneWidth = w / 4;
+            const hitZoneY = h - 60;
+
+            // 1. Draw Audio Visualizer Bars in Background
+            const numBars = visualizerData.length;
+            const barWidth = w / numBars;
+            for (let i = 0; i < numBars; i++) {
+                visualizerData[i] *= 0.90; // decay
+                const barHeight = visualizerData[i] * (h * 0.35);
+                ctx.fillStyle = i % 2 === 0 ? 'rgba(0, 245, 212, 0.08)' : 'rgba(168, 85, 247, 0.08)';
+                ctx.fillRect(i * barWidth + 2, h - barHeight, barWidth - 4, barHeight);
+            }
+
+            // 2. Draw 4 Lane Tracks
+            const colors = ['#00F5D4', '#00E5FF', '#A855F7', '#F59E0B'];
+            for (let i = 0; i < 4; i++) {
+                const x = i * laneWidth;
+                
+                // Track Line
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, 0, laneWidth, h);
+
+                // Highlight Active Key Press
+                if (lanePressState[i]) {
+                    const gradient = ctx.createLinearGradient(0, 0, 0, h);
+                    gradient.addColorStop(0, colors[i] + '00');
+                    gradient.addColorStop(1, colors[i] + '44');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x, 0, laneWidth, h);
+                }
+
+                // Hit Zone Target Circles
+                ctx.beginPath();
+                ctx.arc(x + laneWidth / 2, hitZoneY, 26, 0, Math.PI * 2);
+                ctx.strokeStyle = colors[i];
+                ctx.lineWidth = lanePressState[i] ? 5 : 2;
+                ctx.shadowColor = colors[i];
+                ctx.shadowBlur = lanePressState[i] ? 15 : 4;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                if (lanePressState[i]) {
+                    ctx.fillStyle = colors[i] + '66';
+                    ctx.fill();
+                }
+            }
+
+            if (isGaming) {
+                spawnNotes(timestamp);
+
+                // Update & Draw Notes
+                for (let i = notes.length - 1; i >= 0; i--) {
+                    const n = notes[i];
+                    n.y += n.speed;
+
+                    const nx = n.lane * laneWidth + laneWidth / 2;
+
+                    // Note Tail Trail
+                    ctx.beginPath();
+                    ctx.moveTo(nx, n.y);
+                    ctx.lineTo(nx, Math.max(0, n.y - 35));
+                    ctx.strokeStyle = colors[n.lane] + '66';
+                    ctx.lineWidth = 8;
+                    ctx.stroke();
+
+                    // Draw Glowing Note Crystal
+                    ctx.beginPath();
+                    ctx.arc(nx, n.y, 18, 0, Math.PI * 2);
+                    ctx.fillStyle = colors[n.lane];
+                    ctx.shadowColor = colors[n.lane];
+                    ctx.shadowBlur = 18;
+                    ctx.fill();
+
+                    // Inner Star Core
+                    ctx.beginPath();
+                    ctx.arc(nx, n.y, 7, 0, Math.PI * 2);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Missed Note (Passed Hit Zone)
+                    if (n.y > hitZoneY + 45 && !n.hit) {
+                        n.hit = true;
+                        triggerHitEval('MISS', n.lane);
+                        notes.splice(i, 1);
+                    }
+                }
+            }
+
+            // Draw Hit Shockwaves
+            for (let i = shockwaves.length - 1; i >= 0; i--) {
+                const sw = shockwaves[i];
+                sw.r += 2.5;
+                sw.alpha -= 0.05;
+                if (sw.alpha <= 0) {
+                    shockwaves.splice(i, 1);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+                ctx.strokeStyle = sw.color + Math.floor(sw.alpha * 255).toString(16).padStart(2, '0');
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+
+            // Draw Burst Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.03;
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + Math.floor(p.alpha * 255).toString(16).padStart(2, '0');
+                ctx.fill();
+            }
+
+            // Draw Floating Score Texts (PERFECT / GREAT / MISS)
+            for (let i = floatTexts.length - 1; i >= 0; i--) {
+                const ft = floatTexts[i];
+                ft.y -= 1.5;
+                ft.alpha -= 0.02;
+                if (ft.alpha <= 0) {
+                    floatTexts.splice(i, 1);
+                    continue;
+                }
+                ctx.font = '900 20px Outfit, sans-serif';
+                ctx.fillStyle = ft.color + Math.floor(ft.alpha * 255).toString(16).padStart(2, '0');
+                ctx.shadowColor = ft.color;
+                ctx.shadowBlur = 10;
+                ctx.textAlign = 'center';
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.shadowBlur = 0;
+            }
+
+            if (isGaming) {
+                animFrameId = requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function toggleGame() {
+            if (isGaming) {
+                stopGame();
+            } else {
+                startGame();
+            }
+        }
+
+        function startGame() {
+            initAudioContext();
+            isGaming = true;
+            score = 0;
+            combo = 0;
+            maxCombo = 0;
+            countPerfect = 0;
+            countGreat = 0;
+            countMiss = 0;
+            notes = [];
+            particles = [];
+            floatTexts = [];
+            shockwaves = [];
+            gameTimer = 30.0;
+
+            resizeCanvas();
+            updateDashboard();
+
+            document.getElementById('game-overlay-start').classList.add('hidden');
+            document.getElementById('game-btn-icon').className = "fa-solid fa-rotate-right";
+            document.getElementById('game-btn-text').textContent = "重新開始 (Reset)";
+
+            startAccompaniment();
+
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(() => {
+                gameTimer -= 0.1;
+                if (gameTimer <= 0) {
+                    gameTimer = 0;
+                    stopGame();
+                    showReportModal();
+                    pickNextNonRepeatingSong();
+                }
+                document.getElementById('disp-timer').textContent = gameTimer.toFixed(1) + 's';
+            }, 100);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function stopGame() {
+            isGaming = false;
+            stopAccompaniment();
+            if (gameInterval) {
+                clearInterval(gameInterval);
+                gameInterval = null;
+            }
+            document.getElementById('game-btn-icon').className = "fa-solid fa-play";
+            document.getElementById('game-btn-text').textContent = "開始體驗 (Start)";
+        }
+
+        function updateDashboard() {
+            document.getElementById('disp-score').textContent = score.toString().padStart(5, '0');
+            document.getElementById('disp-combo').textContent = combo;
+        }
+
+        function spawnNotes(timestamp) {
+            const spawnInterval = gameDifficulty === 'easy' ? 450 : 280;
+            const speed = gameDifficulty === 'easy' ? 5 : 7.5;
+
+            if (timestamp - lastSpawnTime > spawnInterval) {
+                lastSpawnTime = timestamp;
+                const lane = Math.floor(Math.random() * 4);
+                notes.push({
+                    lane: lane,
+                    y: -20,
+                    speed: speed,
+                    hit: false
+                });
+            }
+        }
+
+        function gameLoop(timestamp) {
+            if (!gameCanvas || !ctx) return;
+            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            const w = gameCanvas.width;
+            const h = gameCanvas.height;
+            const laneWidth = w / 4;
+            const hitZoneY = h - 60;
+
+            // 1. Draw Audio Visualizer Bars in Background
+            const numBars = visualizerData.length;
+            const barWidth = w / numBars;
+            for (let i = 0; i < numBars; i++) {
+                visualizerData[i] *= 0.90; // decay
+                const barHeight = visualizerData[i] * (h * 0.35);
+                ctx.fillStyle = i % 2 === 0 ? 'rgba(0, 245, 212, 0.08)' : 'rgba(168, 85, 247, 0.08)';
+                ctx.fillRect(i * barWidth + 2, h - barHeight, barWidth - 4, barHeight);
+            }
+
+            // 2. Draw 4 Lane Tracks
+            const colors = ['#00F5D4', '#00E5FF', '#A855F7', '#F59E0B'];
+            for (let i = 0; i < 4; i++) {
+                const x = i * laneWidth;
+                
+                // Track Line
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, 0, laneWidth, h);
+
+                // Highlight Active Key Press
+                if (lanePressState[i]) {
+                    const gradient = ctx.createLinearGradient(0, 0, 0, h);
+                    gradient.addColorStop(0, colors[i] + '00');
+                    gradient.addColorStop(1, colors[i] + '44');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x, 0, laneWidth, h);
+                }
+
+                // Hit Zone Target Circles
+                ctx.beginPath();
+                ctx.arc(x + laneWidth / 2, hitZoneY, 26, 0, Math.PI * 2);
+                ctx.strokeStyle = colors[i];
+                ctx.lineWidth = lanePressState[i] ? 5 : 2;
+                ctx.shadowColor = colors[i];
+                ctx.shadowBlur = lanePressState[i] ? 15 : 4;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                if (lanePressState[i]) {
+                    ctx.fillStyle = colors[i] + '66';
+                    ctx.fill();
+                }
+            }
+
+            if (isGaming) {
+                spawnNotes(timestamp);
+
+                // Update & Draw Notes
+                for (let i = notes.length - 1; i >= 0; i--) {
+                    const n = notes[i];
+                    n.y += n.speed;
+
+                    const nx = n.lane * laneWidth + laneWidth / 2;
+
+                    // Note Tail Trail
+                    ctx.beginPath();
+                    ctx.moveTo(nx, n.y);
+                    ctx.lineTo(nx, Math.max(0, n.y - 35));
+                    ctx.strokeStyle = colors[n.lane] + '66';
+                    ctx.lineWidth = 8;
+                    ctx.stroke();
+
+                    // Draw Glowing Note Crystal
+                    ctx.beginPath();
+                    ctx.arc(nx, n.y, 18, 0, Math.PI * 2);
+                    ctx.fillStyle = colors[n.lane];
+                    ctx.shadowColor = colors[n.lane];
+                    ctx.shadowBlur = 18;
+                    ctx.fill();
+
+                    // Inner Star Core
+                    ctx.beginPath();
+                    ctx.arc(nx, n.y, 7, 0, Math.PI * 2);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Missed Note (Passed Hit Zone)
+                    if (n.y > hitZoneY + 45 && !n.hit) {
+                        n.hit = true;
+                        triggerHitEval('MISS', n.lane);
+                        notes.splice(i, 1);
+                    }
+                }
+            }
+
+            // Draw Hit Shockwaves
+            for (let i = shockwaves.length - 1; i >= 0; i--) {
+                const sw = shockwaves[i];
+                sw.r += 2.5;
+                sw.alpha -= 0.05;
+                if (sw.alpha <= 0) {
+                    shockwaves.splice(i, 1);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+                ctx.strokeStyle = sw.color + Math.floor(sw.alpha * 255).toString(16).padStart(2, '0');
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+
+            // Draw Burst Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.03;
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + Math.floor(p.alpha * 255).toString(16).padStart(2, '0');
+                ctx.fill();
+            }
+
+            // Draw Floating Score Texts (PERFECT / GREAT / MISS)
+            for (let i = floatTexts.length - 1; i >= 0; i--) {
+                const ft = floatTexts[i];
+                ft.y -= 1.5;
+                ft.alpha -= 0.02;
+                if (ft.alpha <= 0) {
+                    floatTexts.splice(i, 1);
+                    continue;
+                }
+                ctx.font = '900 20px Outfit, sans-serif';
+                ctx.fillStyle = ft.color + Math.floor(ft.alpha * 255).toString(16).padStart(2, '0');
+                ctx.shadowColor = ft.color;
+                ctx.shadowBlur = 10;
+                ctx.textAlign = 'center';
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.shadowBlur = 0;
+            }
+
+            if (isGaming) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        /* Anti-Spam Key Trigger & Hit Evaluation */
+        function triggerKey(laneIndex) {
+            if (!isGaming) return;
+            const now = performance.now();
+
+            // Flash Lane Visual
+            lanePressState[laneIndex] = true;
+            setTimeout(() => lanePressState[laneIndex] = false, 120);
+
+            // Cooldown protection against spam clicking (90ms)
+            if (now - lastLanePressTime[laneIndex] < 90) return;
+            lastLanePressTime[laneIndex] = now;
+
+            const hitZoneY = gameCanvas.height - 60;
+            let targetNoteIndex = -1;
+            let minDistance = 9999;
+
+            // Find closest note in current lane
+            for (let i = 0; i < notes.length; i++) {
+                const n = notes[i];
+                if (n.lane === laneIndex && !n.hit) {
+                    const dist = Math.abs(n.y - hitZoneY);
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        targetNoteIndex = i;
+                    }
+                }
+            }
+
+            if (targetNoteIndex !== -1 && minDistance < 55) {
+                // Hit Note!
+                const note = notes[targetNoteIndex];
+                note.hit = true;
+                notes.splice(targetNoteIndex, 1);
+
+                playSynthesizedNote(laneIndex);
+
+                if (minDistance < 22) {
+                    triggerHitEval('PERFECT', laneIndex);
+                } else {
+                    triggerHitEval('GREAT', laneIndex);
+                }
+            } else {
+                // Anti-Spam Penalty: Blank key press without note triggers MISS!
+                triggerHitEval('MISS', laneIndex);
+            }
+        }
+
+        function triggerHitEval(type, laneIndex) {
+            const laneWidth = gameCanvas.width / 4;
+            const x = laneIndex * laneWidth + laneWidth / 2;
+            const y = gameCanvas.height - 60;
+            const isFever = combo >= 15;
+            const multiplier = isFever ? 2 : 1;
+
+            if (type === 'PERFECT') {
+                combo++;
+                if (combo > maxCombo) maxCombo = combo;
+                score += (300 + (combo * 10)) * multiplier;
+                countPerfect++;
+                spawnParticles(x, y, '#00F5D4');
+                shockwaves.push({ x: x, y: y, r: 15, color: '#00F5D4', alpha: 1 });
+                floatTexts.push({ text: isFever ? 'FEVER PERFECT! 🔥' : 'PERFECT! ✨', x: x, y: y - 20, color: '#00F5D4', alpha: 1 });
+            } else if (type === 'GREAT') {
+                combo++;
+                if (combo > maxCombo) maxCombo = combo;
+                score += (150 + (combo * 5)) * multiplier;
+                countGreat++;
+                spawnParticles(x, y, '#00E5FF');
+                shockwaves.push({ x: x, y: y, r: 15, color: '#00E5FF', alpha: 1 });
+                floatTexts.push({ text: 'GREAT! 🌟', x: x, y: y - 20, color: '#00E5FF', alpha: 1 });
+            } else { // MISS
+                combo = 0;
+                score = Math.max(0, score - 100);
+                countMiss++;
+                floatTexts.push({ text: 'MISS ❌', x: x, y: y - 20, color: '#EC4899', alpha: 1 });
+            }
+
+            // Update FEVER Mode Overlay UI
+            const feverBadge = document.getElementById('fever-badge');
+            const feverOverlay = document.getElementById('fever-overlay');
+            if (combo >= 15) {
+                feverBadge.classList.remove('hidden');
+                feverOverlay.style.opacity = '0.6';
+            } else {
+                feverBadge.classList.add('hidden');
+                feverOverlay.style.opacity = '0';
+            }
+
+            updateDashboard();
+        }
+
+        function spawnParticles(x, y, color) {
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 5 + 2;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: Math.random() * 4 + 2,
+                    color: color,
+                    alpha: 1
+                });
+            }
+        }
+
+        // Key Listeners for D, F, J, K
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+            const keyMap = { 'd': 0, 'D': 0, 'f': 1, 'F': 1, 'j': 2, 'J': 2, 'k': 3, 'K': 3 };
+            if (keyMap[e.key] !== undefined) {
+                triggerKey(keyMap[e.key]);
+            }
+        });
+
+        /* Post-Game Modal Logic */
+        function showReportModal() {
+            const modal = document.getElementById('modal-report');
+            document.getElementById('modal-score').textContent = score.toLocaleString();
+            document.getElementById('modal-combo').textContent = maxCombo + ' Combo';
+            document.getElementById('modal-perfect').textContent = countPerfect;
+
+            // Calculate Rank
+            let rank = 'C';
+            if (score > 12000) rank = 'SS';
+            else if (score > 9000) rank = 'S';
+            else if (score > 6000) rank = 'A';
+            else if (score > 3000) rank = 'B';
+            document.getElementById('modal-rank').textContent = rank + ' Rank';
+
+            // Custom Judge Comments
+            document.getElementById('comment-mozart').textContent = `「Perfect 打擊數達 ${countPerfect} 次！音符精準度極佳！」`;
+            document.getElementById('comment-pop').textContent = `「最高連擊達 ${maxCombo} Combo！現場節奏強勁！」`;
+            document.getElementById('comment-jazz').textContent = `「總得分 ${score} 分！展現了流行律動感！」`;
+            document.getElementById('comment-cat').textContent = `「喵～敲擊了 ${countPerfect + countGreat} 次發光音符，給你優等罐罐！」`;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeReportModal() {
+            const modal = document.getElementById('modal-report');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        /* Background Particle Stars Animation */
+        (function initBgStars() {
+            const bgCanvas = document.getElementById('bg-stars');
+            if (!bgCanvas) return;
+            const bgCtx = bgCanvas.getContext('2d');
+            let stars = [];
+
+            function resizeBg() {
+                bgCanvas.width = window.innerWidth;
+                bgCanvas.height = window.innerHeight;
+                stars = [];
+                for (let i = 0; i < 80; i++) {
+                    stars.push({
+                        x: Math.random() * bgCanvas.width,
+                        y: Math.random() * bgCanvas.height,
+                        r: Math.random() * 1.8 + 0.5,
+                        alpha: Math.random() * 0.7 + 0.3,
+                        speed: Math.random() * 0.3 + 0.1
+                    });
+                }
+            }
+
+            window.addEventListener('resize', resizeBg);
+            resizeBg();
+
+            function drawBgStars() {
+                bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+                for (let s of stars) {
+                    s.y -= s.speed;
+                    if (s.y < 0) s.y = bgCanvas.height;
+                    bgCtx.beginPath();
+                    bgCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    bgCtx.fillStyle = `rgba(0, 245, 212, ${s.alpha})`;
+                    bgCtx.fill();
+                }
+                requestAnimationFrame(drawBgStars);
+            }
+            drawBgStars();
+        })();
+    </script>
+</body>
+</html>
